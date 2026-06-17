@@ -40,16 +40,16 @@ Instale as dependências necessárias:
 
 ```bash
 # Locust (obrigatório)
-pip install locust
+python -m pip install locust
 
 # Geração de gráficos (opcional)
-pip install pandas matplotlib
+python -m pip install pandas matplotlib
 ```
 
 Para verificar se o Locust foi instalado corretamente:
 
 ```bash
-locust --version
+python -m locust --version
 ```
 
 ---
@@ -147,7 +147,7 @@ Os arquivos `*_stats.csv` são os principais para análise e contêm:
 Após executar os três testes, execute:
 
 ```bash
-python graficos.py
+python -m graficos
 ```
 
 O script lê os CSVs da pasta `resultados/` e gera:
