@@ -67,19 +67,19 @@ cd S:\testes-performance
 **10 usuários**
 
 ```bash
-locust -f locustfile.py --headless -u 10 -r 2 -t 1m
+python -m locust -f locustfile.py --headless -u 10 -r 2 -t 1m
 ```
 
 **50 usuários**
 
 ```bash
-locust -f locustfile.py --headless -u 50 -r 5 -t 1m
+python -m locust -f locustfile.py --headless -u 50 -r 5 -t 1m
 ```
 
 **100 usuários**
 
 ```bash
-locust -f locustfile.py --headless -u 100 -r 10 -t 1m
+python -m locust -f locustfile.py --headless -u 100 -r 10 -t 1m
 ```
 
 ### Exportar resultados para CSV
@@ -89,19 +89,19 @@ Antes de executar, confirme que existe uma pasta chamada `resultados`.
 **10 usuários**
 
 ```bash
-locust -f locustfile.py --headless -u 10 -r 2 -t 1m --csv resultados/resultados_10
+python -m locust -f locustfile.py --headless -u 10 -r 2 -t 1m --csv resultados/resultados_10
 ```
 
 **50 usuários**
 
 ```bash
-locust -f locustfile.py --headless -u 50 -r 5 -t 1m --csv resultados/resultados_50
+python -m locust -f locustfile.py --headless -u 50 -r 5 -t 1m --csv resultados/resultados_50
 ```
 
 **100 usuários**
 
 ```bash
-locust -f locustfile.py --headless -u 100 -r 10 -t 1m --csv resultados/resultados_100
+python -m locust -f locustfile.py --headless -u 100 -r 10 -t 1m --csv resultados/resultados_100
 ```
 
 ### Executar os três testes em sequência
@@ -109,7 +109,7 @@ locust -f locustfile.py --headless -u 100 -r 10 -t 1m --csv resultados/resultado
 No terminal do VS Code:
 
 ```powershell
-locust -f locustfile.py --headless -u 10 -r 2 -t 1m --csv resultados/resultados_10; locust -f locustfile.py --headless -u 50 -r 5 -t 1m --csv resultados/resultados_50; locust -f locustfile.py --headless -u 100 -r 10 -t 1m --csv resultados/resultados_100
+python -m locust -f locustfile.py --headless -u 10 -r 2 -t 1m --csv resultados/resultados_10; python -m locust -f locustfile.py --headless -u 50 -r 5 -t 1m --csv resultados/resultados_50; python -m locust -f locustfile.py --headless -u 100 -r 10 -t 1m --csv resultados/resultados_100
 ```
 
 Os três testes serão executados em sequência, começando pelo teste com 10 usuários, depois 50 usuários e, por último, 100 usuários.
@@ -162,7 +162,7 @@ O script lê os CSVs da pasta `resultados/` e gera:
 ## Referência dos parâmetros
 
 ```bash
-locust -f locustfile.py --headless -u 10 -r 2 -t 1m --csv resultados/resultados_10
+python -m locust -f locustfile.py --headless -u 10 -r 2 -t 1m --csv resultados/resultados_10
 ```
 
 | Parâmetro          | Descrição                              |
