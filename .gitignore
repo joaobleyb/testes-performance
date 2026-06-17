@@ -1,0 +1,44 @@
+```gitignore
+# Ambiente virtual
+venv/
+.venv/
+env/
+
+# Arquivos temporários do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Cache de ferramentas
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Configurações do VS Code
+.vscode/
+
+# Configurações do PyCharm
+.idea/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Resultados gerados pelo Locust
+resultados/*_stats.csv
+resultados/*_stats_history.csv
+resultados/*_failures.csv
+resultados/*_exceptions.csv
+
+# Gráficos gerados
+resultados/*.png
+
+# Arquivos temporários do relatório
+*.tmp
+*.bak
+~$*
+```
