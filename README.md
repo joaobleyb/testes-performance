@@ -25,7 +25,6 @@ testes-performance/
 ├── .gitignore
 ├── locustfile.py
 ├── graficos.py
-├── executar_testes.bat
 ├── README.md
 └── resultados/
 ```

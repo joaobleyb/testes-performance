@@ -7,6 +7,8 @@ import pandas as pd
 PASTA_PROJETO = Path(__file__).resolve().parent
 PASTA_RESULTADOS = PASTA_PROJETO / "resultados"
 
+PASTA_RESULTADOS.mkdir(exist_ok=True)
+
 arquivos = {
     10: PASTA_RESULTADOS / "resultados_10_stats.csv",
     50: PASTA_RESULTADOS / "resultados_50_stats.csv",
@@ -15,10 +17,8 @@ arquivos = {
 
 usuarios = []
 throughput = []
-p50 = []
 p90 = []
 p95 = []
-p99 = []
 requisicoes = []
 falhas = []
 taxa_erros = []
@@ -27,7 +27,8 @@ taxa_erros = []
 for quantidade_usuarios, arquivo in arquivos.items():
     if not arquivo.exists():
         raise FileNotFoundError(
-            f"Arquivo não encontrado: {arquivo}"
+            f"Arquivo não encontrado: {arquivo}\n"
+            "Execute primeiro os testes do Locust com --csv."
         )
 
     df = pd.read_csv(arquivo)
@@ -51,10 +52,8 @@ for quantidade_usuarios, arquivo in arquivos.items():
 
     usuarios.append(quantidade_usuarios)
     throughput.append(float(total["Requests/s"]))
-    p50.append(float(total["50%"]))
     p90.append(float(total["90%"]))
     p95.append(float(total["95%"]))
-    p99.append(float(total["99%"]))
     requisicoes.append(total_requisicoes)
     falhas.append(total_falhas)
     taxa_erros.append(percentual_erros)
@@ -72,6 +71,7 @@ def adicionar_valores(x, y, casas=1, sufixo=""):
 
 
 # GRÁFICO 1 — THROUGHPUT
+
 plt.figure(figsize=(9, 5))
 
 plt.plot(
@@ -104,28 +104,73 @@ plt.savefig(
 
 plt.show()
 
+# GRÁFICO 2 — P90 E P95
 
-# GRÁFICO 2 — PERCENTIS
 plt.figure(figsize=(9, 5))
 
-plt.plot(usuarios, p50, marker="o", label="p50")
-plt.plot(usuarios, p90, marker="o", label="p90")
-plt.plot(usuarios, p95, marker="o", label="p95")
-plt.plot(usuarios, p99, marker="o", label="p99")
+posicoes = list(range(len(usuarios)))
+largura = 0.35
 
-for valores in [p50, p90, p95, p99]:
-    adicionar_valores(
-        usuarios,
-        valores,
-        casas=0,
-        sufixo=" ms",
+posicoes_p90 = [
+    posicao - largura / 2
+    for posicao in posicoes
+]
+
+posicoes_p95 = [
+    posicao + largura / 2
+    for posicao in posicoes
+]
+
+barras_p90 = plt.bar(
+    posicoes_p90,
+    p90,
+    width=largura,
+    label="p90",
+)
+
+barras_p95 = plt.bar(
+    posicoes_p95,
+    p95,
+    width=largura,
+    label="p95",
+)
+
+for barra in barras_p90:
+    altura = barra.get_height()
+
+    plt.annotate(
+        f"{altura:.0f} ms",
+        xy=(
+            barra.get_x() + barra.get_width() / 2,
+            altura,
+        ),
+        xytext=(0, 5),
+        textcoords="offset points",
+        ha="center",
+        va="bottom",
     )
 
-plt.title("Percentis do tempo de resposta")
+for barra in barras_p95:
+    altura = barra.get_height()
+
+    plt.annotate(
+        f"{altura:.0f} ms",
+        xy=(
+            barra.get_x() + barra.get_width() / 2,
+            altura,
+        ),
+        xytext=(0, 5),
+        textcoords="offset points",
+        ha="center",
+        va="bottom",
+    )
+
+plt.title("Comparação entre p90 e p95")
 plt.xlabel("Usuários simultâneos")
 plt.ylabel("Tempo de resposta em milissegundos")
-plt.xticks(usuarios)
-plt.grid(True)
+plt.xticks(posicoes, usuarios)
+plt.ylim(0, max(p90 + p95) * 1.25)
+plt.grid(axis="y", linestyle="--", alpha=0.5)
 plt.legend()
 plt.tight_layout()
 
@@ -154,7 +199,6 @@ posicoes_falhas = [
     for posicao in posicoes
 ]
 
-# Barras de requisições
 barras_requisicoes = eixo1.bar(
     posicoes_requisicoes,
     requisicoes,
@@ -162,7 +206,6 @@ barras_requisicoes = eixo1.bar(
     label="Requisições",
 )
 
-# Barras de falhas
 barras_falhas = eixo1.bar(
     posicoes_falhas,
     falhas,
@@ -177,7 +220,6 @@ eixo1.set_xticks(posicoes)
 eixo1.set_xticklabels(usuarios)
 eixo1.grid(axis="y", linestyle="--", alpha=0.5)
 
-# Valores em cima das barras
 for barra in barras_requisicoes:
     altura = barra.get_height()
 
@@ -208,11 +250,9 @@ for barra in barras_falhas:
         va="bottom",
     )
 
-# Segundo eixo para a taxa de erro
 eixo2 = eixo1.twinx()
 
-# Apenas pontos, sem linha ligando
-pontos_taxa = eixo2.scatter(
+eixo2.scatter(
     posicoes,
     taxa_erros,
     marker="D",
@@ -223,7 +263,6 @@ pontos_taxa = eixo2.scatter(
 
 eixo2.set_ylabel("Taxa de erro (%)")
 
-# Deixa uma margem no eixo para os textos
 maior_taxa = max(taxa_erros)
 
 if maior_taxa == 0:
@@ -231,7 +270,6 @@ if maior_taxa == 0:
 else:
     eixo2.set_ylim(0, maior_taxa * 1.4)
 
-# Valores da taxa de erro
 for posicao, valor in zip(posicoes, taxa_erros):
     eixo2.annotate(
         f"{valor:.2f}%",
@@ -242,7 +280,6 @@ for posicao, valor in zip(posicoes, taxa_erros):
         va="bottom",
     )
 
-# Juntar as legendas dos dois eixos
 elementos1, rotulos1 = eixo1.get_legend_handles_labels()
 elementos2, rotulos2 = eixo2.get_legend_handles_labels()
 
@@ -255,8 +292,7 @@ eixo1.legend(
 fig.tight_layout()
 
 plt.savefig(
-    PASTA_RESULTADOS
-    / "grafico_requisicoes_falhas_erros.png",
+    PASTA_RESULTADOS / "grafico_requisicoes_falhas_erros.png",
     dpi=300,
 )
 
