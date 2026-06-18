@@ -28,12 +28,6 @@ desktop.ini
 # Logs
 *.log
 
-# Resultados gerados pelo Locust
-resultados/*_stats.csv
-resultados/*_stats_history.csv
-resultados/*_failures.csv
-resultados/*_exceptions.csv
-
 # Gráficos gerados
 resultados/*.png
 
